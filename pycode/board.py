@@ -6,10 +6,12 @@ class Board:
         self.size = size
         self.board = [[0 for _ in range(size)] for _ in range(size)]
         self.current_player = 1
+        self.steps = 0
     # 重置棋盘
     def reset(self):
         self.current_player = 1
         self.board = [[0 for _ in range(self.size)] for _ in range(self.size)]
+        self.steps = 0
     # 落子操作
     def add_piece(self, x: int, y: int) -> bool:
         #用1代表黑子，2代表白子
@@ -18,6 +20,7 @@ class Board:
         if self.board[x][y] == 0:
             self.board[x][y] = self.current_player
             self.current_player = 3 - self.current_player
+            self.steps += 1
             return True
         return False
     # 获取所有空位
@@ -39,9 +42,12 @@ class Board:
             if self.check_line([self.board[row][col] for row in range(self.size)]) != 0:
                 return self.check_line([self.board[row][col] for row in range(self.size)])
         # 检查对角线
-        if self.check_line([self.board[i][i] for i in range(self.size)]) != 0 or \
-           self.check_line([self.board[i][self.size - 1 - i] for i in range(self.size)]) != 0:
-            return self.check_line([self.board[i][i] for i in range(self.size)])
+        for i in range(self.size - 4):
+            for j in range(self.size - 4):
+                if self.check_line([self.board[i + k][j + k] for k in range(5)]) != 0:
+                    return self.check_line([self.board[i + k][j + k] for k in range(5)])
+                if self.check_line([self.board[i + 4 - k][j + k] for k in range(5)]) != 0:
+                    return self.check_line([self.board[i + 4 - k][j + k] for k in range(5)])
         return 0
     def check_line(self, line):
         count = 0

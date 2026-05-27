@@ -15,7 +15,14 @@ class GobangGUI:
         self.player1 = player1
         self.player2 = player2
         self.canvas = tk.Canvas(self.master, width=40*self.size+80, height=40*self.size+80+40, bg='lightgreen')
-        self.canvas.pack()
+        self.canvas.grid(row=0, column=0)
+        #在屏幕右侧显示当前玩家和总步数
+        self.panel = tk.Frame(self.master, width=150)
+        self.panel.grid(row=0, column=1, sticky="n")
+        self.turn_label = tk.Label(self.panel, text=f"当前回合：{'黑子' if self.board.current_player == 1 else '白子'}")
+        self.turn_label.pack(pady=13*self.size)
+        self.steps_label = tk.Label(self.panel, text=f"总步数：{self.board.steps}")
+        self.steps_label.pack(pady=10)
         if isinstance(self.player2, Player.AIPlayer):
             self.canvas.bind("<Button-1>", self.on_click_ai)
         else:
@@ -31,6 +38,8 @@ class GobangGUI:
     def refresh(self):
         self.canvas.delete("all")
         self.draw_board()
+        self.steps_label.config(text=f"总步数：{self.board.steps}")
+        self.turn_label.config(text=f"当前回合：{'黑子' if self.board.current_player == 1 else '白子'}")
         s = self.size
         for i in range(s):
             for j in range(s):
@@ -64,6 +73,8 @@ class GobangGUI:
         y = event.y
         col = (x - 40) // 40
         row = (y - 20) // 40
+        if self.board.board[row][col] != 0:
+            return
         if self.board.current_player == 1:
             self.board.add_piece(row, col)
             self.refresh()
