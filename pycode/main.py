@@ -20,7 +20,15 @@ if tkinter.messagebox.askyesno("五子棋", "是否开始新游戏？"):
     root = tkinter.Tk()
     if mode:
         player1 = Player.HumanPlayer("玩家", 1)
-        player2 = Player.AIPlayer("AI", 2)
+        AItier = simpledialog.askinteger("五子棋", "请输入AI难度（1-3），默认为1", minvalue=1, maxvalue=3, initialvalue=1)
+        if AItier not in [1, 2, 3]:
+            AItier = 1
+        if AItier == 1:
+            player2 = Player.AIPlayer1("AI", 2)
+        elif AItier == 2:
+            player2 = Player.AIPlayer2("AI", 2)
+        else:
+            player2 = Player.AIPlayer3("AI", 2)
     else:
         player1 = Player.HumanPlayer("黑方", 1)
         player2 = Player.HumanPlayer("白方", 2)

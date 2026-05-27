@@ -23,7 +23,7 @@ class GobangGUI:
         self.turn_label.pack(pady=13*self.size)
         self.steps_label = tk.Label(self.panel, text=f"总步数：{self.board.steps}")
         self.steps_label.pack(pady=10)
-        if isinstance(self.player2, Player.AIPlayer):
+        if isinstance(self.player2, Player.AIPlayer1) or isinstance(self.player2, Player.AIPlayer2) or isinstance(self.player2, Player.AIPlayer3):
             self.canvas.bind("<Button-1>", self.on_click_ai)
         else:
             self.canvas.bind("<Button-1>", self.on_click) #鼠标左键绑定下棋
