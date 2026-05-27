@@ -7,6 +7,13 @@ import board
 import Player
 import visualize
 
+def updateUI(gui):
+    for i in range(gui.board.size):
+        for j in range(gui.board.size):
+            if gui.board.board[i][j] == 1:
+                gui.canvas.create_oval(60 + j * 40 - 15, 40 + i * 40 - 15, 60 + j * 40 + 15, 40 + i * 40 + 15, fill='black')
+            elif gui.board.board[i][j] == 2:
+                gui.canvas.create_oval(60 + j * 40 - 15, 40 + i * 40 - 15, 60 + j * 40 + 15, 40 + i * 40 + 15, fill='white')
 #下面是主程序
 #先弹出对话框，询问用户是否开始游戏
 if tkinter.messagebox.askyesno("五子棋", "是否开始新游戏？"):
@@ -25,5 +32,6 @@ if tkinter.messagebox.askyesno("五子棋", "是否开始新游戏？"):
     #创建可视化界面
     root = tkinter.Tk()
     ui = visualize.GobangGUI(root, init_board)
-    ui.draw_board()
-    root.mainloop()
+    #开始主程序
+    ui.run()
+
