@@ -23,15 +23,14 @@ if tkinter.messagebox.askyesno("五子棋", "是否开始新游戏？"):
     init_board = board.Board(size)
     #然后问人机对战还是双人
     mode = tkinter.messagebox.askyesno("五子棋", "是否进行人机对战？")
+    #创建可视化界面
+    root = tkinter.Tk()
     if mode:
         player1 = Player.HumanPlayer("玩家", 1)
         player2 = Player.AIPlayer("AI", 2)
     else:
         player1 = Player.HumanPlayer("黑方", 1)
         player2 = Player.HumanPlayer("白方", 2)
-    #创建可视化界面
-    root = tkinter.Tk()
-    ui = visualize.GobangGUI(root, init_board)
-    #开始主程序
+    ui = visualize.GobangGUI(root, init_board, player1, player2)
     ui.run()
 
