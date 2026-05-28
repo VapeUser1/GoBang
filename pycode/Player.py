@@ -50,3 +50,25 @@ class AIPlayer3(Player):
         max_score = max(scores) if scores else 0
         best_moves = [cell for cell, score in zip(empty_cells, scores) if score == max_score]
         return random.choice(best_moves) if best_moves else random.choice(empty_cells)
+class AIPlayer4(Player):
+    def getMove(self, board):
+        empty_cells = board.getValuablePlace(3)
+        for c in empty_cells:
+            if AIfunction.get_score(board.board, c[0], c[1]) >= 1000000:
+                return c
+        # 如果没有找到直接获胜的棋步，使用决策树
+        pos = []
+        for c in empty_cells:
+            pos.append(AIGameTree.create_game_tree(board, self.piece, c))
+            #给决策树再加一层
+            AIGameTree.expand_game_tree(pos[-1])
+        # 在这里可以对决策树进行评估，选择最优解
+        best_move = max(pos, key=lambda tree: tree.evaluate(), default=None)
+        print(best_move.evaluate() if best_move else "No moves evaluated")
+        if best_move and max(best_move.evaluate() for best_move in pos) >= 30000:
+            return best_move.latestMove
+        # 如果没有更好的选择就按照2级ai的算法
+        scores = [AIfunction.get_score(board.board, x, y) for x, y in empty_cells]
+        max_score = max(scores) if scores else 0
+        best_moves = [cell for cell, score in zip(empty_cells, scores) if score == max_score]
+        return random.choice(best_moves) if best_moves else random.choice(empty_cells)

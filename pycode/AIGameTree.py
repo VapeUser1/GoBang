@@ -33,8 +33,16 @@ class GameTreeNode:
 def create_game_tree(board, player, latestMove):
     root = GameTreeNode(board, player, latestMove)
     # 生成第一层子节点，为防止计算量爆炸，只考虑周围有棋子的位置
-    valuable_positions = board.getValuablePlace(3)
+    valuable_positions = root.board.getValuablePlace(3)
     for pos in valuable_positions:
         child = GameTreeNode(board, 3 - player, pos, parent=root)
         root.add_child(child)
     return root
+
+#定义函数：扩展一层子节点（计算量增大）
+def expand_game_tree(root):
+    for child in root.children:
+        valuable_positions = child.board.getValuablePlace(1)
+        for pos in valuable_positions:
+            grandchild = GameTreeNode(child.board, 3 - child.player, pos, parent=child)
+            child.add_child(grandchild)
