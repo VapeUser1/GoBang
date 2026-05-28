@@ -20,7 +20,7 @@
 
 ### 游戏界面
 
-![](C:\Users\Administrator\AppData\Roaming\marktext\images\2026-05-28-16-03-47-image.png)
+![image](https://github.com/VapeUser1/GoBang/blob/master/icon.png)
 
 ---
 
