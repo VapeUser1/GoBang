@@ -1,7 +1,7 @@
 #定义真人和ai玩家的类，包含获取用户输入的方法
 import AIfunction
 import random
-import copy
+import time
 #定义玩家类型，有两个子类：真人和ai
 class Player:
     def __init__(self, name, piece):

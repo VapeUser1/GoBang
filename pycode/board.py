@@ -7,11 +7,13 @@ class Board:
         self.board = [[0 for _ in range(size)] for _ in range(size)]
         self.current_player = 1
         self.steps = 0
+        self.latest_move = None
     # 重置棋盘
     def reset(self):
         self.current_player = 1
         self.board = [[0 for _ in range(self.size)] for _ in range(self.size)]
         self.steps = 0
+        self.latest_move = None
     # 落子操作
     def add_piece(self, x: int, y: int) -> bool:
         #用1代表黑子，2代表白子
@@ -21,6 +23,7 @@ class Board:
             self.board[x][y] = self.current_player
             self.current_player = 3 - self.current_player
             self.steps += 1
+            self.latest_move = (x, y)
             return True
         return False
     # 获取所有空位

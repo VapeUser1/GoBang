@@ -61,6 +61,6 @@ def get_score(board, x, y):
     #优先级：胜利→阻止对方胜利→冲四活三→周围棋子数
     ailst = get_line_count(board, x, y)
     playerlst = is_blocking_opponent(board, x, y)
-    scorelst = [ailst.count(5), playerlst[0], ailst.count(4), playerlst[1], ailst.count(3), playerlst[2], len(get_nearby_pieces(board, x, y))]
+    scorelst = [ailst.count(5), playerlst[0], ailst.count(4), playerlst[1], playerlst[2], ailst.count(3), len(get_nearby_pieces(board, x, y))]
     weights = [100000, 10000, 1000, 500, 100, 10, 1]
     return sum(s * w for s, w in zip(scorelst, weights))

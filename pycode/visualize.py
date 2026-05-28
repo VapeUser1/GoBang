@@ -2,7 +2,7 @@
 #把生成tkinter界面的内容也写在这里面
 #每下一步棋就刷新一下棋盘
 import tkinter as tk
-import board
+import time
 import winsound
 import Player
 
@@ -43,6 +43,8 @@ class GobangGUI:
         s = self.size
         for i in range(s):
             for j in range(s):
+                if (i,j) == self.board.latest_move:
+                    self.canvas.create_rectangle(60 + j * 40 - 20, 40 + i * 40 - 20, 60 + j * 40 + 20, 40 + i * 40 + 20, outline='red')
                 if self.board.board[i][j] == 1:
                     self.canvas.create_oval(60 + j * 40 - 15, 40 + i * 40 - 15, 60 + j * 40 + 15, 40 + i * 40 + 15, fill='black')
                 elif self.board.board[i][j] == 2:
