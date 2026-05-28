@@ -22,17 +22,6 @@
 
 ![image](https://github.com/VapeUser1/GoBang/blob/master/icon.png)
 
----
-
-## Project Structure
-
-AI-Gobang/
-│
-├── pycode        # 代码文件
-
-├── build.bat     # 启动命令
-├── start.vbs      # 一键启动
-└── README.md
 
 ---
 
