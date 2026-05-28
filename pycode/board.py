@@ -74,7 +74,7 @@ class Board:
         for row in self.board:
             print(' '.join(str(cell) for cell in row))
     #获取所有临近空位（周围n格有棋子）
-    def getValuablePlace(self, n):
+    def getValuablePlace(self, n=2):
         valuable_positions = set()
         for i in range(self.size):
             for j in range(self.size):

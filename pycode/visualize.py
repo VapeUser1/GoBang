@@ -33,7 +33,6 @@ class GobangGUI:
         for i in range(self.size):
             self.canvas.create_line(60 + i * 40, 40, 60 + i * 40, 40 + (self.size-1) * 40)
             self.canvas.create_line(60, 40 + i * 40, 60 + (self.size-1) * 40, 40 + i * 40)
-        self.master.update()
 
     def refresh(self):
         self.canvas.delete("all")
@@ -49,9 +48,13 @@ class GobangGUI:
                     self.canvas.create_oval(60 + j * 40 - 15, 40 + i * 40 - 15, 60 + j * 40 + 15, 40 + i * 40 + 15, fill='black')
                 elif self.board.board[i][j] == 2:
                     self.canvas.create_oval(60 + j * 40 - 15, 40 + i * 40 - 15, 60 + j * 40 + 15, 40 + i * 40 + 15, fill='white')
+        self.master.update()
     #单独把询问是否重新开始做成模块
     def ask_restart(self):
-        tk.messagebox.showinfo("游戏结束", f"{'黑子' if self.board.check_win() == 1 else '白子'}获胜！")
+        if self.board.check_win() == 0:
+            tk.messagebox.showinfo("游戏结束", "平局！")
+        else:
+            tk.messagebox.showinfo("游戏结束", f"{'黑子' if self.board.check_win() == 1 else '白子'}获胜！")
         if tk.messagebox.askyesno("五子棋", "是否开始新游戏？"):
             self.board.reset()
             self.refresh()
@@ -67,7 +70,7 @@ class GobangGUI:
         self.refresh()
         winsound.PlaySound('step.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
         #每下完一步都检测一下有没有赢
-        if self.board.check_win() != 0:
+        if self.board.check_win() != 0 or self.board.get_empty_positions() == []:
             self.ask_restart()
 
     def on_click_ai(self, event):
@@ -81,14 +84,14 @@ class GobangGUI:
             self.board.add_piece(row, col)
             self.refresh()
             winsound.PlaySound('step.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
-            if self.board.check_win() != 0:
+            if self.board.check_win() != 0 or self.board.get_empty_positions() == []:
                 self.ask_restart()
                 return
         c2,r2 = self.player2.getMove(self.board)
         self.board.add_piece(c2, r2)
         self.refresh()
         winsound.PlaySound('step.wav', winsound.SND_FILENAME | winsound.SND_ASYNC)
-        if self.board.check_win() != 0:
+        if self.board.check_win() != 0 or self.board.get_empty_positions() == []:
             self.ask_restart()
             return
 

@@ -2,7 +2,6 @@
 import tkinter
 import tkinter.messagebox
 from tkinter import simpledialog
-import winsound
 import board
 import Player
 import visualize
