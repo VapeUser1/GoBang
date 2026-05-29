@@ -14,13 +14,22 @@ def get_nearby_pieces(board, x, y):
                 nearby.append((nx, ny, board[nx][ny]))
     return nearby
 #获取棋盘上一点所在的横竖斜信息
-def get_position_info(board, x, y):
-    line1 = board[x]  # 横
-    line2 = [board[i][y] for i in range(len(board))]  # 竖
-    line3 = [board[x + i][y + i] for i in range(-4, 5) if 0 <= x + i < len(board) and 0 <= y + i < len(board)]  # 主对角
-    line4 = [board[x + i][y - i] for i in range(-4, 5) if 0 <= x + i < len(board) and 0 <= y - i < len(board)]  # 副对角
-    info = (line1, line2, line3, line4)
-    return (''.join(map(str, line)) for line in info)
+def get_position_info(board, x, y, size=11):
+    n = len(board)
+    def get_line(dx, dy):
+        line = []
+        for i in range(-n, n):
+            nx, ny = x + i * dx, y + i * dy
+            if 0 <= nx < n and 0 <= ny < n:
+                line.append(board[nx][ny])
+            '''else:
+                line.append(0)  # 边界补0'''
+        return ''.join(map(str, line))
+    horizontal = get_line(0, 1)
+    vertical   = get_line(1, 0)
+    diag1      = get_line(1, 1)
+    diag2      = get_line(1, -1)
+    return [horizontal, vertical, diag1, diag2]
 #重新写一下检测横竖斜方向连线长度的函数
 def get_line_count(board, x, y):
     vboard = copy.deepcopy(board)
@@ -72,3 +81,52 @@ def get_score(board, x, y):
     scorelst = [ailst[0], playerlst[0], ailst[1], playerlst[1], ailst[2], distance, len(get_nearby_pieces(board, x, y))]
     weights = [1000000, 10000, 1000, 500, 100, 10, 1]
     return sum(s * w for s, w in zip(scorelst, weights))
+
+#评估局面对玩家的优势度
+def evaluate_player(board, player):
+    score = 0
+
+    n = len(board)
+    m = len(board[0])
+
+    piece_list = [(i, j)
+                  for i in range(n)
+                  for j in range(m)
+                  if board[i][j] == player]
+
+    conditions = ['11111', '011110', '11110', '01110'] if player == 1 else \
+                 ['22222', '022220', '22220', '02220']
+
+    seen = set()  # 防止重复计分（关键优化）
+
+    for x, y in piece_list:
+        info = list(get_position_info(board, x, y))
+
+        for d in range(4):
+            key = (x, y, d)
+            if key in seen:
+                continue
+            seen.add(key)
+
+            pattern = info[d]
+
+            if pattern == conditions[0]:
+                return 10**8  # 五连直接胜
+
+            elif pattern == conditions[1]:
+                score += 20000  # 活四（高威胁）
+
+            elif pattern == conditions[2]:
+                score += 5000   # 冲四
+
+            elif pattern == conditions[3]:
+                score += 1000   # 活三
+
+    return score
+
+#评估局面总体对AI的得分
+def evaluate_board(board):
+    ai_score = evaluate_player(board, 2)
+    player_score = evaluate_player(board, 1)
+    return ai_score - player_score
+

@@ -46,3 +46,7 @@ def expand_game_tree(root):
         for pos in valuable_positions:
             grandchild = GameTreeNode(child.board, 3 - child.player, pos, parent=child)
             child.add_child(grandchild)
+
+#评估整个局面
+def evaluate_board(board):
+    pass

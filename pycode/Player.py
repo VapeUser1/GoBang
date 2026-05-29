@@ -2,6 +2,7 @@
 import AIfunction
 import AIGameTree
 import random
+import minimax
 #定义玩家类型，有两个子类：真人和ai
 class Player:
     def __init__(self, name, piece):
@@ -33,26 +34,13 @@ class Player:
         # 如果没有更好的选择就按照2级ai的算法
         return self.getMoveByScore(board)
     #4级ai使用算法
-    def getMoveByTreeWithExpand(self, board):
-        empty_cells = board.getValuablePlace(3)
-        for c in empty_cells:
-            if AIfunction.get_score(board.board, c[0], c[1]) >= 1000000:
-                return c
-        # 如果没有找到直接获胜的棋步，使用决策树
-        pos = []
-        for c in empty_cells:
-            pos.append(AIGameTree.create_game_tree(board, self.piece, c))
-            #给决策树再加一层
-            AIGameTree.expand_game_tree(pos[-1])
-        # 在这里可以对决策树进行评估，选择最优解
-        best_move = max(pos, key=lambda tree: tree.evaluate(), default=None)
-        print(best_move.evaluate() if best_move else "No moves evaluated")
-        if best_move and max(best_move.evaluate() for best_move in pos) >= 30000:
-            return best_move.latestMove
-        # 如果没有更好的选择就按照2级ai的算法
-        return self.getMoveByScore(board)
+    def getMoveByMiniMax(self, board):
+        return minimax.getBestMove(board, 3)
 
-class HumanPlayer(Player):
+class HumanPlayer:
+    def __init__(self, name, piece):
+        self.name = name
+        self.piece = piece
     def getMove_cmd(self):
         x, y = map(int, input("Enter your move (row and column): ").split())
         return x, y
@@ -75,4 +63,4 @@ class AIPlayer3(Player):
         return self.getMoveByTree(board)
 class AIPlayer4(Player):
     def getMove(self, board):
-        return self.getMoveByTreeWithExpand(board)
+        return self.getMoveByMiniMax(board)
