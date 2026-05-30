@@ -148,10 +148,10 @@ def evaluate_player(board, player):
             cnt[name] += count_overlaps(line, pat)
     # 双活三或多个高威胁视为即胜的强威胁
     if cnt['open_three'] >= 2:
-        return 5 * 10**7
+        return 2 * 10**5
     # 优先级赋值
     score = 0
-    score += cnt['open_four'] * 20000
+    score += cnt['open_four'] * 10**6
     score += (cnt['closed_four_left'] + cnt['closed_four_right']) * 5000
     score += cnt['open_three'] * 1000
 
@@ -163,6 +163,9 @@ def evaluate_board(board): #需要考虑先后手影响，同样的局面先手�
     ai_score = evaluate_player(vboard, 2)
     player_score = evaluate_player(vboard, 1)
     # 先手优势系数稍微减少到1.2以避免过度放大先手
-    k = 1.2
-    return ai_score - k * player_score
+    k = 1.5
+    if board.current_player == 1:
+        return ai_score - k * player_score
+    else:
+        return k * ai_score - player_score
 

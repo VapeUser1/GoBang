@@ -10,17 +10,21 @@ def minimax(board, depth, player):
         best_score = -float('inf') #开始搜索最佳得分，初始化为负无穷
         for x,y in board.getValuablePlace(2): #只搜索周围2个位置
             board.board[x][y] = player #模拟落子
+            board.current_player = 3 - board.current_player
             score = minimax(board, depth-1, 3-player) #递归搜索下一层
             best_score = max(score, best_score) #更新最佳得分
             board.board[x][y] = 0 #撤销落子
+            board.current_player = 3 - board.current_player
         return best_score
     else: #人类黑棋
         best_score = float('inf') #开始搜索最佳得分，初始化为正无穷
         for x,y in board.getValuablePlace(2): #只搜索周围2个位置
             board.board[x][y] = player #模拟落子
+            board.current_player = 3 - board.current_player
             score = minimax(board, depth-1, 3-player) #递归搜索下一层
             best_score = min(score, best_score) #更新最佳得分
             board.board[x][y] = 0 #撤销落子
+            board.current_player = 3 - board.current_player
         return best_score
 
 def getBestMove(board, depth):
@@ -29,8 +33,10 @@ def getBestMove(board, depth):
     best_move = None
     for x, y in places:
         board.board[x][y] = 2  # AI白棋落子
+        board.current_player = 3 - board.current_player
         score = minimax(board, depth-1, 1)  # 递归搜索
         board.board[x][y] = 0  # 撤销落子
+        board.current_player = 3 - board.current_player
         if score > best_score:
             best_score = score
             best_move = (x, y)

@@ -18,7 +18,7 @@ class Player:
         return random.choice(best_moves) if best_moves else random.choice(empty_cells)
     #3级ai使用算法
     def getMoveByTree(self, board):
-        empty_cells = board.getValuablePlace(3)
+        empty_cells = board.getValuablePlace(2)
         for c in empty_cells:
             if AIfunction.get_score(board.board, c[0], c[1]) >= 1000000:
                 return c
@@ -35,7 +35,7 @@ class Player:
         return self.getMoveByScore(board)
     #4级ai使用算法
     def getMoveByMiniMax(self, board):
-        return minimax.getBestMove(board, 2)
+        return minimax.getBestMove(board, 3)
 
 class HumanPlayer:
     def __init__(self, name, piece):
