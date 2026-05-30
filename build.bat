@@ -1,3 +1,1 @@
-@echo off
-cd pycode
-python main.py
+python -m PyInstaller -F -w  -i icon.png pycode/main.py
