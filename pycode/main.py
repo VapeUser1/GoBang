@@ -6,11 +6,21 @@ import board
 import Player
 import visualize
 
+def center_window(win):
+    win.update_idletasks()  # 让窗口计算大小
+    width = win.winfo_width()
+    height = win.winfo_height()
+    screen_width = win.winfo_screenwidth()
+    screen_height = win.winfo_screenheight()
+    x = (screen_width // 2) - (width // 2)
+    y = (screen_height // 2) - (height // 2)
+    win.geometry(f"{width}x{height}+{x}+{y}")
+
 def ask_game_mode(parent):
     dialog = tkinter.Toplevel(parent)
     dialog.title("五子棋")
     dialog.resizable(False, False)
-
+    center_window(dialog)
     result = {'mode':False}
 
     tkinter.Label(

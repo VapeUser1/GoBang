@@ -36,8 +36,8 @@ class Player:
     #4级ai使用算法
     def getMoveByMiniMax(self, board):
         move, score = minimax.getBestMove(board, 3)
-        if score == 0 or abs(score) >= 98000000:
-            return self.getMoveByScore(board)
+        if score == 0:
+            return self.getMoveByTree(board)
         return move
 
 class HumanPlayer:
