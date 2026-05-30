@@ -35,7 +35,7 @@ class Player:
         return self.getMoveByScore(board)
     #4级ai使用算法
     def getMoveByMiniMax(self, board):
-        return minimax.getBestMove(board, 3)
+        return minimax.getBestMove(board, 2)
 
 class HumanPlayer:
     def __init__(self, name, piece):

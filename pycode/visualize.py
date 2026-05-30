@@ -2,7 +2,7 @@
 #把生成tkinter界面的内容也写在这里面
 #每下一步棋就刷新一下棋盘
 import tkinter as tk
-import time
+import AIfunction
 import winsound
 import Player
 

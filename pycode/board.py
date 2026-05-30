@@ -26,6 +26,12 @@ class Board:
             self.latest_move = (x, y)
             return True
         return False
+    #撤销一步落子
+    def undo(self):
+        x,y = self.latest_move
+        self.board[x][y] == 0
+        self.current_player = 3 - self.current_player
+        self.latest_move = None
     # 获取所有空位
     def get_empty_positions(self):
         empty_positions = []

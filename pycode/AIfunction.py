@@ -2,6 +2,7 @@
 # AI执白棋（2）
 # 基础函数：检测横竖斜方向连线长度
 import copy
+import re
 #获取周围棋子
 def get_nearby_pieces(board, x, y):
     nearby = []
@@ -72,6 +73,36 @@ def is_blocking_opponent(board, x, y):
     if scorelst[1] >= 2:
         scorelst[0] += 1
     return scorelst
+
+# 提取：返回棋盘上所有长度>=5的直线（行/列/对角）字符串列表，便于评估函数复用
+def get_all_lines(board):
+    n = len(board)
+    lines = []
+    # rows
+    for i in range(n):
+        lines.append(''.join(str(board[i][j]) for j in range(n)))
+    # cols
+    for j in range(n):
+        lines.append(''.join(str(board[i][j]) for i in range(n)))
+    # diag (top-left to bottom-right)
+    for k in range(-n + 5, n - 4):
+        diag = []
+        for i in range(n):
+            j = i - k
+            if 0 <= j < n:
+                diag.append(str(board[i][j]))
+        if len(diag) >= 5:
+            lines.append(''.join(diag))
+    # anti-diag (top-right to bottom-left)
+    for k in range(4, 2 * n - 4):
+        adiag = []
+        for i in range(n):
+            j = k - i
+            if 0 <= j < n:
+                adiag.append(str(board[i][j]))
+        if len(adiag) >= 5:
+            lines.append(''.join(adiag))
+    return lines
 #综合计算得分
 def get_score(board, x, y):
     #优先级：胜利→阻止对方胜利→冲四活三→周围棋子数
@@ -84,49 +115,54 @@ def get_score(board, x, y):
 
 #评估局面对玩家的优势度
 def evaluate_player(board, player):
-    score = 0
-
-    n = len(board)
-    m = len(board[0])
-
-    piece_list = [(i, j)
-                  for i in range(n)
-                  for j in range(m)
-                  if board[i][j] == player]
-
-    conditions = ['11111', '011110', '11110', '01110'] if player == 1 else \
-                 ['22222', '022220', '22220', '02220']
-
-    seen = set()  # 防止重复计分（关键优化）
-
-    for x, y in piece_list:
-        info = list(get_position_info(board, x, y))
-
-        for d in range(4):
-            key = (x, y, d)
-            if key in seen:
+    """
+    更稳健的评估单个玩家的函数：
+    - 扫描所有行（行/列/对角线），用正则查找重叠匹配
+    - 识别五连、活四、冲四、活三等，并对双活三等复合威胁给予更高权重
+    返回数值，越大表示该玩家越有利
+    """
+    # 使用通用的 lines 生成器
+    lines = get_all_lines(board)
+    # 定义各类模式（player相关）
+    p = str(player)
+    zero = '0'
+    patterns = {
+        'five': p * 5,
+        'open_four': zero + p * 4 + zero,
+        'closed_four_left': p * 4 + zero,
+        'closed_four_right': zero + p * 4,
+        'open_three': zero + p * 3 + zero,
+    }
+    # 计数工具：支持重叠匹配
+    def count_overlaps(line, pat):
+        return len(re.findall('(?={})'.format(re.escape(pat)), line))
+    cnt = {k: 0 for k in patterns}
+    # 遍历所有线并计数
+    for line in lines:
+        # 直接五连立即返回极大值
+        if patterns['five'] in line:
+            return 10**8
+        for name, pat in patterns.items():
+            if name == 'five':
                 continue
-            seen.add(key)
-
-            pattern = info[d]
-
-            if pattern == conditions[0]:
-                return 10**8  # 五连直接胜
-
-            elif pattern == conditions[1]:
-                score += 20000  # 活四（高威胁）
-
-            elif pattern == conditions[2]:
-                score += 5000   # 冲四
-
-            elif pattern == conditions[3]:
-                score += 1000   # 活三
+            cnt[name] += count_overlaps(line, pat)
+    # 双活三或多个高威胁视为即胜的强威胁
+    if cnt['open_three'] >= 2:
+        return 5 * 10**7
+    # 优先级赋值
+    score = 0
+    score += cnt['open_four'] * 20000
+    score += (cnt['closed_four_left'] + cnt['closed_four_right']) * 5000
+    score += cnt['open_three'] * 1000
 
     return score
 
 #评估局面总体对AI的得分
-def evaluate_board(board):
-    ai_score = evaluate_player(board, 2)
-    player_score = evaluate_player(board, 1)
-    return ai_score - player_score
+def evaluate_board(board): #需要考虑先后手影响，同样的局面先手方得分应该更高，系数暂定1.5
+    vboard = board.board
+    ai_score = evaluate_player(vboard, 2)
+    player_score = evaluate_player(vboard, 1)
+    # 先手优势系数稍微减少到1.2以避免过度放大先手
+    k = 1.2
+    return ai_score - k * player_score
 
