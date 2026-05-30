@@ -168,14 +168,14 @@ def evaluate_player(board, player):
     score += cnt['open_three'] * 10000
     score += cnt['open_three_2'] * 10**5'''
     score = 0
-    #先考虑黑方：
+    #先考虑先手方：
     if player == 1:
         if cnt['open_four'] + cnt['closed_four'] > 0:
             return 10**9
         if cnt['open_three_2'] + cnt['open_three_3'] > 0:
             return 10**8
         score += cnt['open_three'] * 10000
-    #然后是白方
+    #然后是后手方：
     else:
         if cnt['open_four'] > 0:
             return 5 * 10**8
