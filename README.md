@@ -22,7 +22,6 @@
 
 ![image](https://github.com/VapeUser1/GoBang/blob/master/icon.png)
 
-
 ---
 
 ## Requirement
@@ -51,6 +50,20 @@
 
 ---
 
+## Build
+
+1. 安装pyinstaller
+   
+   ```
+   pip install pyinstaller
+   ```
+
+2. 点击build.bat
+
+**dist文件夹中有build完成后的main.exe*
+
+---
+
 ## AI Strategy
 
 当前 AI 使用：
@@ -58,6 +71,7 @@
 - 局部评分搜索
 - 威胁检测
 - 决策树搜索
+- minimax搜索+alphabeta剪枝优化
 
 评估内容包括：
 
@@ -69,8 +83,7 @@
 
 后续计划加入：
 
-- Minimax
-- Alpha-Beta Pruning
+- 蒙特卡洛搜索
 
 ---
 

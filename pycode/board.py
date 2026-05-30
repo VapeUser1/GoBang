@@ -26,6 +26,12 @@ class Board:
             self.latest_move = (x, y)
             return True
         return False
+    #撤销一步落子
+    def undo(self):
+        x,y = self.latest_move
+        self.board[x][y] == 0
+        self.current_player = 3 - self.current_player
+        self.latest_move = None
     # 获取所有空位
     def get_empty_positions(self):
         empty_positions = []
@@ -79,13 +85,12 @@ class Board:
         for i in range(self.size):
             for j in range(self.size):
                 if self.board[i][j] != 0:
-                    # 检查周围n格
-                    for dx in range(-n, n + 1):
-                        for dy in range(-n, n + 1):
-                            if abs(dx) + abs(dy) <= n:
-                                x, y = i + dx, j + dy
-                                if 0 <= x < self.size and 0 <= y < self.size:
-                                    if self.board[x][y] == 0 and (x, y) not in valuable_positions:
-                                        valuable_positions.add((x, y))
+                    for dx in range(-n, n+1):
+                        for dy in range(-n, n+1):
+                           x, y = i+dx, j+dy
+                           if (0 <= x < self.size and
+                                0 <= y < self.size and
+                                self.board[x][y] == 0):
+                                valuable_positions.add((x,y))
         return list(valuable_positions)
     
