@@ -69,7 +69,7 @@ def getBestMove(board, depth):
         score = minimax(board, depth - 1, 1, alpha, beta)
         board.board[x][y] = 0  # 撤销落子
         board.current_player = 3 - board.current_player
-        if score > best_score:
+        if score >= best_score:
             best_score = score
             best_move = (x, y)
         if best_score > alpha:
