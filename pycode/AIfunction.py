@@ -23,7 +23,7 @@ def get_position_info(board, x, y, size=11):
             nx, ny = x + i * dx, y + i * dy
             if 0 <= nx < n and 0 <= ny < n:
                 line.append(board[nx][ny])
-        return ''.join(map(str, line))
+        return line
     horizontal = get_line(0, 1)
     vertical   = get_line(1, 0)
     diag1      = get_line(1, 1)
@@ -34,17 +34,17 @@ def get_line_count(board, x, y):
     vboard = copy.deepcopy(board)
     vboard[x][y] = 2  # 假设AI下在这个位置
     info = get_position_info(vboard, x, y)
-    win_conditions = '22222'
-    win_conditions2 = '022220'
-    valuable_conditions = '02220'
-    normal_conditions = '0222'
+    win_conditions = [2,2,2,2,2]
+    win_conditions2 = [0,2,2,2,2,0]
+    valuable_conditions = [0,2,2,2,0]
+    normal_conditions = [0,2,2,2]
     scorelst = [0,0,0]
     for line in info:
-        if win_conditions in line or win_conditions2 in line:
+        if lst1_in_lst2(win_conditions, line) or lst1_in_lst2(win_conditions2, line):
             scorelst[0] += 2
-        elif valuable_conditions in line:
+        elif lst1_in_lst2(valuable_conditions, line):
             scorelst[1] += 1
-        elif normal_conditions in line:
+        elif lst1_in_lst2(normal_conditions, line):
             scorelst[2] += 1
     if scorelst[1] >= 2:
         scorelst[0] += 1
@@ -57,15 +57,15 @@ def get_distance_to_edge(board, x, y):
 def is_blocking_opponent(board, x, y):
     vboard = copy.deepcopy(board)
     vboard[x][y] = 1  # 假设黑棋下这里
-    win_conditions = '11111'
-    win_conditions2 = '011110'
-    dangerous_conditions = '01110'
+    win_conditions = [1,1,1,1,1]
+    win_conditions2 = [0,1,1,1,1]
+    dangerous_conditions = [0,1,1,1,0]
     info = get_position_info(vboard, x, y)
     scorelst = [0,0]#表示必须拦截，潜在威胁
     for line in info:
-        if win_conditions in line or win_conditions2 in line:
+        if lst1_in_lst2(win_conditions, line) or lst1_in_lst2(win_conditions2, line):
             scorelst[0] += 2
-        if dangerous_conditions in line:
+        if lst1_in_lst2(dangerous_conditions, line):
             scorelst[1] += 1
     #有两个活3也必须拦截：
     if scorelst[1] >= 2:
