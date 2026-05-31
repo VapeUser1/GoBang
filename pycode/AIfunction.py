@@ -23,8 +23,6 @@ def get_position_info(board, x, y, size=11):
             nx, ny = x + i * dx, y + i * dy
             if 0 <= nx < n and 0 <= ny < n:
                 line.append(board[nx][ny])
-            '''else:
-                line.append(0)  # 边界补0'''
         return ''.join(map(str, line))
     horizontal = get_line(0, 1)
     vertical   = get_line(1, 0)
